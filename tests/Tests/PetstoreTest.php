@@ -56,13 +56,14 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase {
      * @depends testClientConstruct
      */
     public function testFindPetsByStatus( Client $client ){
-        $pets = $client->findPetsByStatus( array( 'status' => 'sold' ) );
+        $pets = $client->findPetsByStatus( array( 'status' => 'available' ) );
         
         // listing should be validated as Pet_array model, except it doesn't work so disabled.
         // $this->assertInstanceOf('\Guzzle\Service\Resource\Model', $pets );
         // var_dump( $pets->toArray() );
         
         $this->assertInternalType('array', $pets );
+        $this->assertArrayHasKey(0, $pets);
         $this->assertArrayHasKey('id', $pets[0] );
         return (int) $pets[0]['id'];
     }
@@ -75,7 +76,7 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase {
      * @depends testFindPetsByStatus
      */
     public function testGetPetById( Client $client, $petId ){
-        $petId = 3; // <- bug in petstore definition disallows pidId>100
+//        $petId = 3; // <- bug in petstore definition disallows pidId>100
         $pet = $client->getPetById( compact('petId') );
         $this->assertInstanceOf('\Guzzle\Service\Resource\Model', $pet );
         $this->assertEquals( $petId, $pet['id'] );
