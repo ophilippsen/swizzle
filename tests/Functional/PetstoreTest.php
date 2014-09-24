@@ -1,6 +1,6 @@
 <?php
 
-namespace Loco\Tests\Utils\Swizzle;
+namespace Loco\Tests\Utils\Swizzle\Functional;
 
 use Guzzle\Service\Client;
 use Guzzle\Service\Description\ServiceDescription;

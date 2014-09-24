@@ -1,6 +1,6 @@
 <?php
 
-namespace Loco\Tests\Utils\Swizzle;
+namespace Loco\Tests\Utils\Swizzle\Unit;
 
 use Loco\Utils\Swizzle\Swizzle;
 use Guzzle\Service\Description\ServiceDescription;

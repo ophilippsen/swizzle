@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Loco\\Tests\\Utils\\Swizzle\\": "tests/Tests/"
+            "Loco\\Tests\\Utils\\Swizzle\\": "tests"
         }
     },
     "extra": {

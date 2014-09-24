@@ -1,6 +1,6 @@
 <?php
 
-namespace Loco\Tests\Utils\Swizzle;
+namespace Loco\Tests\Utils\Swizzle\Unit;
 
 use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Mock\MockPlugin;
