@@ -90,9 +90,7 @@ class SwaggerClientTest extends GuzzleTestCase {
      * @returns SwaggerClient
      */
     public function testMockResourceListing( SwaggerClient $client ){
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), $this->resourcesJson ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), $this->resourcesJson ) );
         $listing = $client->getResources();
         $this->assertInstanceOf('\Loco\Utils\Swizzle\Response\ResourceListing', $listing );
         $this->assertEquals( '1.0', $listing->getApiVersion() );
@@ -109,9 +107,7 @@ class SwaggerClientTest extends GuzzleTestCase {
      * @returns SwaggerClient
      */
     public function testMockApiDeclaration( SwaggerClient $client ){
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), $this->declarationJson ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), $this->declarationJson ) );
         $declaration = $client->getDeclaration( array(
             'path' => '/ping',
         ) );

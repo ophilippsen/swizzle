@@ -141,9 +141,7 @@ class ModelTest extends GuzzleTestCase {
      */
     public function testModelResponseValidates( Client $client ){        
         // fake a response with valid "foo" and legally missing "bar" property
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), '{"foo":1}' ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), '{"foo":1}' ) );
         $response = $client->test();
         // test value of "foo" key, which will exist
         $this->assertEquals( 1, $response->get('foo') );
@@ -161,9 +159,7 @@ class ModelTest extends GuzzleTestCase {
      */
     public function testModelResponseFailure( Client $client ){        
         // fake a response with missing required property and extra invalid one
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), '{"baz":1}' ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), '{"baz":1}' ) );
         $response = $client->test();
     }
 
@@ -176,9 +172,7 @@ class ModelTest extends GuzzleTestCase {
      */
     public function testArrayResponse( Client $client ){        
         // fake a response with multiple valid objects
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), '[{"foo":1},{"foo":2},{"foo":3}]' ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), '[{"foo":1},{"foo":2},{"foo":3}]' ) );
         $response = $client->testlist();
 
         // response is a plain Response object
@@ -205,9 +199,7 @@ class ModelTest extends GuzzleTestCase {
      */
     public function testModelListResponse( Client $client ){        
         // fake a response with multiple valid objects
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), '[{"foo":3},{"foo":4},{"foo":5}]' ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), '[{"foo":3},{"foo":4},{"foo":5}]' ) );
         $response = $client->testwrap();
 
         // test response is a model
@@ -227,9 +219,7 @@ class ModelTest extends GuzzleTestCase {
      */
     public function testModelListObjectResponse( Client $client ){        
         // fake a response with multiple valid objects
-        $plugin = new MockPlugin();
-        $plugin->addResponse( new Response( 200, array(), '{"list":[{"foo":4},{"foo":5},{"foo":6}]}' ) );
-        $client->addSubscriber( $plugin );
+        $this->setMockResponse($client, new Response( 200, array(), '{"list":[{"foo":4},{"foo":5},{"foo":6}]}' ) );
         $response = $client->testwrapobj();
 
         // test response is a model
