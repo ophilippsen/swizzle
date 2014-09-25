@@ -2,9 +2,10 @@
 
 namespace Loco\Utils\Swizzle;
 
-use Guzzle\Common\Collection;
-use Guzzle\Service\Client;
-use Guzzle\Service\Description\ServiceDescription;
+use GuzzleHttp\Client;
+use GuzzleHttp\Collection;
+use GuzzleHttp\Command\Guzzle\Description;
+use GuzzleHttp\Command\Guzzle\GuzzleClient;
 
 /**
  * Client for pulling Swagger docs
@@ -12,9 +13,8 @@ use Guzzle\Service\Description\ServiceDescription;
  * @method array getResources
  * @method array getDeclaration
  */
-class SwaggerClient extends Client {
+class SwaggerClient extends GuzzleClient {
 
-    
     /**
      * Factory method to create a new Swagger Docs client.
      * @param array|Collection $config Configuration data
@@ -29,18 +29,19 @@ class SwaggerClient extends Client {
         // Merge in default settings and validate the config
         $config = Collection::fromConfig( $config, $default, $required );
 
-        // Create a new instance of self
-        $client = new self( $config->get('base_url'), $config );
 
-        // describe service from JSON file.
-        $service = ServiceDescription::factory( __DIR__.'/Resources/service.json');
-        
-        // Prefix Loco identifier to user agent string
-        $client->setUserAgent( $service->getName().'/'.$service->getApiVersion(), true );
+        $client = new Client($config->toArray());
 
-        return $client->setDescription( $service );
-                
-    }   
+        $serviceDescription = \GuzzleHttp\json_decode(file_get_contents(__DIR__.'/Resources/service.json'), TRUE);
+        $serviceDescription['baseUrl'] = rtrim($config->get('base_url'), '/') . '/';
+        $description = new Description($serviceDescription);
+
+        $guzzleClient = new self($client, $description, $config->toArray());
+
+        // @TODO: Set User-Agent
+
+        return $guzzleClient;
+    }
 
 }
 

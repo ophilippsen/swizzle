@@ -1,7 +1,6 @@
 <?php
 namespace Loco\Utils\Swizzle\Response;
 
-use Guzzle\Service\Command\OperationCommand;
 use Loco\Utils\Swizzle\ModelCollection;
 
 /**
@@ -9,19 +8,6 @@ use Loco\Utils\Swizzle\ModelCollection;
  */
 class ApiDeclaration extends BaseResponse {
 
-
-    /**
-     * Create a response model object from a completed command
-     * @internal
-     * @param OperationCommand Command that serialized the request
-     * @throws \Guzzle\Http\Exception\BadResponseException 
-     * @return ApiDeclaration
-     */
-    public static function fromCommand( OperationCommand $command ) {
-        return new ApiDeclaration( $command->getResponse() );
-    }
-    
-    
     /**
      * Get basePath sepcified outside of api operations
      * @return string

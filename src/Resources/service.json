@@ -8,20 +8,40 @@
             "summary:": "Get swagger Resource Listing",
             "uri" : "",
             "httpMethod": "GET",
-            "responseType": "class",
-            "responseClass" : "Loco\\Utils\\Swizzle\\Response\\ResourceListing"
+            "responseModel" : "ResourceListing"
         },
         "getDeclaration" : {
             "summary:": "Get swagger API Declaration",
             "uri" : "{path}",
             "httpMethod": "GET",
-            "responseType": "class",
-            "responseClass" : "Loco\\Utils\\Swizzle\\Response\\ApiDeclaration",
+            "responseModel" : "ApiDeclaration",
             "parameters": {
                 "path" : {
                     "description": "Path to declaration endpoint",
                     "required": true,
                     "location": "uri"
+                }
+            }
+        }
+    },
+    "models" : {
+        "ResourceListing": {
+            "type": "object",
+            "properties": {
+                "ResourceListing": {
+                    "type": "object",
+                    "location": "body",
+                    "filters": ["Loco\\Utils\\Swizzle\\Response\\ResourceListing::fromCommand"]
+                }
+            }
+        },
+        "ApiDeclaration": {
+            "type": "object",
+            "properties": {
+                "ApiDeclaration": {
+                    "type": "object",
+                    "location": "body",
+                    "filters": ["Loco\\Utils\\Swizzle\\Response\\ApiDeclaration::fromCommand"]
                 }
             }
         }

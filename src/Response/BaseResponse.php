@@ -1,14 +1,13 @@
 <?php
 namespace Loco\Utils\Swizzle\Response;
 
-use Guzzle\Service\Command\ResponseClassInterface;
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Stream\Stream;
 
 
 /**
  * Base response class for Swagger docs resources
  */
-abstract class BaseResponse implements ResponseClassInterface {
+abstract class BaseResponse {
     
     /**
      * Raw response data
@@ -17,11 +16,22 @@ abstract class BaseResponse implements ResponseClassInterface {
     protected $raw;
 
     /**
+     * Create a response model object from a completed command
+     * @internal
+     * @param Stream $stream
+     * @return ResourceListing
+     */
+    public static function fromCommand( Stream $stream ) {
+        return new static( (string)$stream );
+    }
+
+    /**
      * Construct from http response
      * @internal
+     * @param string $jsonString
      */
-    final protected function __construct( Response $response ) {
-        $this->raw = $response->json();
+    final protected function __construct( $jsonString ) {
+        $this->raw = \GuzzleHttp\json_decode($jsonString, TRUE);
     }
     
     
