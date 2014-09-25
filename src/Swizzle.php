@@ -2,7 +2,7 @@
 
 namespace Loco\Utils\Swizzle;
 
-use Monolog\Logger;
+use Loco\Utils\Swizzle\Logger\Logger as SwizzleLogger;
 use Monolog\Handler\StreamHandler;
 
 use GuzzleHttp\Command\Guzzle\Description as ServiceDescription;
@@ -18,8 +18,8 @@ use Loco\Utils\Swizzle\Response\ResourceListing;
 class Swizzle {
     
     /**
-     * Monolog logger for debug output
-     * @var Logger
+     * Monolog-compatible logger for debug output
+     * @var SwizzleLogger
      */
     private $logger;     
     
@@ -78,9 +78,7 @@ class Swizzle {
      */
     public function __construct( $name, $description = '', $apiVersion = '' ){
         $this->init = compact('name','description','apiVersion');
-        $this->logger = new Logger('swizzle');
-        // if we don't add a handler we get debug messages by default.
-        $this->logger->pushHandler( new StreamHandler('php://stderr', Logger::ERROR ) );
+        $this->logger = new SwizzleLogger('swizzle');
     }
     
     
@@ -91,21 +89,9 @@ class Swizzle {
      * @return Swizzle
      */
     public function verbose( $resource ){
-        $this->logger->pushHandler( new StreamHandler( $resource, Logger::DEBUG ) );
+        $this->logger->verbose($resource);
         return $this;
     }
-    
-
-    
-    /**
-     * @internal Log debug events in verbose mode
-     */
-    private function debug( $message ){
-        if( 1 < func_num_args() ){
-            $message = call_user_func_array( 'sprintf', func_get_args() );
-        }
-        $this->logger->addDebug( $message );
-    }        
     
 
     
@@ -220,7 +206,7 @@ class Swizzle {
     public function build( $base_url ){
         $this->service = null;
         $client = SwaggerClient::factory( compact('base_url') );
-        $this->debug('pulling resource listing from %s', $base_url );
+        $this->logger->writeDebug('pulling resource listing from %s', $base_url );
         /* @var $listing ResourceListing */
         $listing = $client->getResources()->getPath('ResourceListing');
         // check this looks like a resource listing
@@ -236,7 +222,7 @@ class Swizzle {
         }
         // Declared version overrides anything we've set
         if( $version = $listing->getApiVersion() ){
-            $this->debug('+ set apiVersion %s', $version );
+            $this->logger->writeDebug('+ set apiVersion %s', $version );
             $this->setApiVersion( $version );
         }
         // Set description if missing from constructor
@@ -257,7 +243,7 @@ class Swizzle {
             }
             // @todo do proper path resolution here, allowing a cross-domain spec.
             $path = trim($path,'/ ');
-            $this->debug('pulling /%s ...', $path );
+            $this->logger->writeDebug('pulling /%s ...', $path );
             $declaration = $client->getDeclaration( compact('path') )->getPath('ApiDeclaration');
             foreach ( $declaration->getModels() as $model ) {
                 $this->addModel( $model );
@@ -269,7 +255,7 @@ class Swizzle {
                 $this->addApi( $api, $baseUrl );
             }
         }
-        $this->debug('finished');
+        $this->logger->writeDebug('finished');
         return $this;
     }
     
@@ -321,7 +307,7 @@ class Swizzle {
     public function addModel( array $model ){
         // swagger only has locations for requests, so we can safely default to our response serializer.
         $model = $this->createModel( $model, $this->responseType );
-        $this->debug('+ adding model %s', $model->getName() );
+        $this->logger->writeDebug('+ adding model %s', $model->getName() );
         $this->getServiceDescription()->addModel( $model );
         return $model;
     }
@@ -347,7 +333,7 @@ class Swizzle {
         if( 0 === strpos( $uri, $service->getBaseUrl() ) ){
             $uri = preg_replace('!^https?://[^/]+!', '', $uri );
         }
-        $this->debug('+ adding api %s ...', $uri );
+        $this->logger->writeDebug('+ adding api %s ...', $uri );
         
         // no need for full url if relative to current
         // operation keys common to both swagger and guzzle
@@ -400,7 +386,7 @@ class Swizzle {
                 // Array primitive may be typed with 'items' spec, but Guzzle operation ignores at top level
                 if( 'array' === $type ){
                     if( isset($op['items']) ){
-                        $this->debug("! no modelling support for root arrays. Item types won't be validated" );
+                        $this->logger->writeDebug("! no modelling support for root arrays. Item types won't be validated" );
                     }
                 } 
                 // Root objects must be declared as models in Guzzle. 
@@ -412,11 +398,11 @@ class Swizzle {
                 // allowed responseClass primitives are 'array', 'boolean', 'string', 'integer' and ''
                 // That leaves just "number" and "null" as unsupported from the core 7 types in json schema.
                 else if ( 'number' === $type ){
-                    $this->debug('! number type defaulted to string as responseClass');
+                    $this->logger->writeDebug('! number type defaulted to string as responseClass');
                     $type = 'string';
                 }
                 else if( 'null' === $type ){
-                    $this->debug('! empty type "%s" defaulted to empty responseClass', $config['responseType'] );
+                    $this->logger->writeDebug('! empty type "%s" defaulted to empty responseClass', $config['responseType'] );
                     $type = '';
                 }
                 
@@ -512,7 +498,7 @@ class Swizzle {
                unset( $namespace[$name][$location] );
                if( $conflicts = array_keys($namespace[$name]) ) {
                    $alias = $name.'_'.$location;
-                   $this->debug('! %s parameter "%s" conflicts with %s, address as "%s"', $location, $name, implode(' and ',$conflicts), $alias );
+                   $this->logger->writeDebug('! %s parameter "%s" conflicts with %s, address as "%s"', $location, $name, implode(' and ',$conflicts), $alias );
                    // namespace this property at our end ensuring it's sent to the API as expected.
                    $param['sentAs'] = $name;
                    $name = $param['name'] = $alias;
@@ -608,7 +594,7 @@ class Swizzle {
         if( isset($target['items']) ){
             $type = 'array';
             if( $type !== $target['type'] ){
-                $this->debug('! %s %s declares items, coercing to "%s"', $target['type']?:'untyped', $name, $type );
+                $this->logger->writeDebug('! %s %s declares items, coercing to "%s"', $target['type']?:'untyped', $name, $type );
                 $target['type'] = $type;
             }
             // resolve model reference ensuring model exists
@@ -633,7 +619,7 @@ class Swizzle {
         if( isset($source['properties']) ){
             $type = 'object';
             if( $type !== $target['type'] ){
-                $this->debug('! %s %s declares properties, coercing to "%s"', $target['type']?:'untyped', $name, $type );
+                $this->logger->writeDebug('! %s %s declares properties, coercing to "%s"', $target['type']?:'untyped', $name, $type );
                 $target['type'] = $type;
             }
             $target['properties'] = $this->transformParams( $source['properties'] );
@@ -660,7 +646,7 @@ class Swizzle {
             $type = $target['type'] = $this->transformSimpleType( $type, $frmt );
             // else fall back to a sensible default
             if( ! $type ){
-                $this->debug('! type "%s" unknown, defaulting to null', $originalType );
+                $this->logger->writeDebug('! type "%s" unknown, defaulting to null', $originalType );
                 $type = $target['type'] = 'null';
             }
         }
@@ -672,7 +658,7 @@ class Swizzle {
         
         // ensure properties is set even if empty, which makes little sense.
         if( 'object' === $type && empty($target['properties']) ){
-            $this->debug('! object %s has empty properties', $name );
+            $this->logger->writeDebug('! object %s has empty properties', $name );
             $target['properties'] = array();
         }
         
