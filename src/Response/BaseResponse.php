@@ -2,7 +2,6 @@
 namespace Loco\Utils\Swizzle\Response;
 
 use Guzzle\Service\Command\ResponseClassInterface;
-use Guzzle\Service\Command\OperationCommand;
 use Guzzle\Http\Message\Response;
 
 

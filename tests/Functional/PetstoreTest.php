@@ -4,9 +4,6 @@ namespace Loco\Tests\Utils\Swizzle\Functional;
 
 use Guzzle\Service\Client;
 use Guzzle\Service\Description\ServiceDescription;
-use Guzzle\Service\Builder\ServiceBuilder;
-use Guzzle\Service\Resource\Model;
-use Guzzle\Http\Message\Response;
 use Loco\Utils\Swizzle\Swizzle;
 
 

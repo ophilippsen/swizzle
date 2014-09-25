@@ -3,9 +3,7 @@
 namespace Loco\Tests\Utils\Swizzle\Functional;
 
 use Guzzle\Tests\GuzzleTestCase;
-use Guzzle\Service\Builder\ServiceBuilder;
 use Guzzle\Http\Message\Response;
-use Guzzle\Plugin\Mock\MockPlugin;
 use Loco\Utils\Swizzle\SwaggerClient;
 
 /**

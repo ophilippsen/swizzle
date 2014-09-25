@@ -8,11 +8,8 @@ use Monolog\Handler\StreamHandler;
 use Guzzle\Service\Description\ServiceDescription;
 use Guzzle\Service\Description\Operation;
 use Guzzle\Service\Description\Parameter;
-use Guzzle\Parser\UriTemplate\UriTemplate;
 
-use Loco\Utils\Swizzle\Response\BaseResponse;
 use Loco\Utils\Swizzle\Response\ResourceListing;
-use Loco\Utils\Swizzle\Response\ApiDeclaration;
 
 
 /**

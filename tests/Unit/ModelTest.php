@@ -3,11 +3,8 @@
 namespace Loco\Tests\Utils\Swizzle\Unit;
 
 use Guzzle\Http\Message\Response;
-use Guzzle\Plugin\Mock\MockPlugin;
 use Guzzle\Service\Client;
 use Guzzle\Service\Description\ServiceDescription;
-use Guzzle\Service\Description\Parameter;
-use Guzzle\Service\Resource\Model;
 use Guzzle\Tests\GuzzleTestCase;
 
 /**

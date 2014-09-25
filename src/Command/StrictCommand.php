@@ -7,7 +7,6 @@ use Guzzle\Service\Command\AbstractCommand;
 use Guzzle\Service\Command\OperationCommand;
 use Guzzle\Service\Description\SchemaValidator;
 use Guzzle\Service\Exception\ValidationException;
-use Guzzle\Service\Command\OperationResponseParser;
 
 /**
  * Operation command that validates response models.
