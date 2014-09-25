@@ -2,16 +2,15 @@
 
 namespace Loco\Tests\Utils\Swizzle\Unit;
 
-use Guzzle\Http\Message\Response;
-use Guzzle\Service\Client;
-use Guzzle\Service\Description\ServiceDescription;
-use Guzzle\Tests\GuzzleTestCase;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Command\Guzzle\GuzzleClient as Client;
+use GuzzleHttp\Command\Guzzle\Description as ServiceDescription;
 
 /**
  * Tests Guzzle's internal modelling logic.
  * @group model
  */
-class ModelTest extends GuzzleTestCase {
+class ModelTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @return Client

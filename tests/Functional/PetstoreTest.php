@@ -2,8 +2,9 @@
 
 namespace Loco\Tests\Utils\Swizzle\Functional;
 
-use Guzzle\Service\Client;
-use Guzzle\Service\Description\ServiceDescription;
+use GuzzleHttp\Client;
+use GuzzleHttp\Command\Guzzle\Description;
+use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use Loco\Utils\Swizzle\Swizzle;
 
 
@@ -16,7 +17,7 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase {
     
     /**
      * Build service description from remote docs.
-     * @return ServiceDescription
+     * @return Description
      */
     public function testServiceBuild(){
         $builder = new Swizzle( 'pets', 'Swagger Pet store' );
@@ -28,31 +29,34 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase {
         $service = $builder->getServiceDescription();
         $this->assertCount( 6, $service->getModels() );
         $this->assertCount( 20, $service->getOperations() );
-        return $service;
-    }    
-    
-    
-    
+
+        $description = new Description($service->toArray());
+        return $description;
+    }
+
+
     /**
      * Construct Swagger client for calling the petstore
      * @depends testServiceBuild
-     * @return Client
+     * @param Description $description
+     * @return GuzzleClient
      */
-    public function testClientConstruct( ServiceDescription $service ){
-        $client = new Client;
-        $client->setDescription( $service );
-        $this->assertEquals('http://petstore.swagger.wordnik.com/api', $client->getBaseUrl() );
+    public function testClientConstruct( Description $description ){
+        $client = new GuzzleClient(new Client(), $description);
+
+        $this->assertInstanceOf('GuzzleHttp\Command\Guzzle\\Command', $client->getCommand('findPetsByStatus'));
         // @todo add Accept: application/json to every request?
         return $client;
-    }    
-    
-    
-    
+    }
+
+
     /**
      * Tests typed array response
      * @depends testClientConstruct
+     * @param GuzzleClient $client
+     * @return int
      */
-    public function testFindPetsByStatus( Client $client ){
+    public function testFindPetsByStatus( GuzzleClient $client ){
         $pets = $client->findPetsByStatus( array( 'status' => 'available' ) );
         
         // listing should be validated as Pet_array model, except it doesn't work so disabled.

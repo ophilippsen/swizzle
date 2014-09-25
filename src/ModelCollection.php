@@ -1,7 +1,7 @@
 <?php
 namespace Loco\Utils\Swizzle;
 
-use Guzzle\Common\Collection;
+use GuzzleHttp\Collection;
 
 /**
  * Sorts models by dependency order

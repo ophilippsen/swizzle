@@ -2,11 +2,9 @@
 
 namespace Loco\Utils\Swizzle\Command;
 
-use Guzzle\Service\Resource\Model;
-use Guzzle\Service\Command\AbstractCommand;
-use Guzzle\Service\Command\OperationCommand;
-use Guzzle\Service\Description\SchemaValidator;
-use Guzzle\Service\Exception\ValidationException;
+use GuzzleHttp\Command\Model;
+use GuzzleHttp\Command\Guzzle\Operation as OperationCommand;
+use GuzzleHttp\Command\Guzzle\SchemaValidator;
 
 /**
  * Operation command that validates response models.

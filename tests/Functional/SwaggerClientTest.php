@@ -2,8 +2,7 @@
 
 namespace Loco\Tests\Utils\Swizzle\Functional;
 
-use Guzzle\Tests\GuzzleTestCase;
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Message\Response;
 use Loco\Utils\Swizzle\SwaggerClient;
 
 /**

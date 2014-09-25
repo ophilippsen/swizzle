@@ -2,9 +2,6 @@
 
 namespace Loco\Utils\Swizzle\Command;
 
-use Guzzle\Service\Command\OperationResponseParser;
-use Guzzle\Service\Command\LocationVisitor\VisitorFlyweight;
-
 /**
  * Response parser that enables schema to be injected into response models.
  */
