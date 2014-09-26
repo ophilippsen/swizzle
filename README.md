@@ -1,5 +1,12 @@
 # Swizzle
 
+### WIP: Update to Guzzle 4
+
+Currently petstore.php does run without fatals, but the output is not yet suited for Guzzle 4.
+Make sure to install [this patch](https://github.com/guzzle/guzzle-services/pull/49) for guzzle-services.
+
+
+
 Build [Guzzle](http://guzzlephp.org) service descriptions from [Swagger](https://helloreverb.com/developers/swagger) compliant APIs.
 
 ### What?
